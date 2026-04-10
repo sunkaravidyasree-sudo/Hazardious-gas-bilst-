@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazardous Gas Detection | Rural Safety</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>RuralGas Protect</h1>
+        <nav>
+            <a href="/">Home</a>
+            {% if session.username %}
+            <a href="/predict">Prediction</a>
+            {% if session.role == 'admin' %}
+            <a href="/dashboard">Dashboard</a>
+            {% endif %}
+            <a href="/logout">Logout ({{ session.username }})</a>
+            {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+            <a href="/admin_login">Admin</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container hero animate-in">
+        <h2>Hazardous Gas Monitoring & Prediction</h2>
+        <p>Advanced Machine Learning platform designed for rural and remote areas to detect toxic gases and predict
+            safety trends.</p>
+
+        <div style="margin-top: 2rem;">
+            {% if session.username %}
+            <a href="/predict" class="btn btn-primary">Go to Prediction</a>
+            {% else %}
+            <a href="/login" class="btn btn-primary">Get Started</a>
+            <a href="/signup" class="btn btn-outline" style="margin-left: 1rem;">Create Account</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container grid">
+        <div class="card animate-in" style="animation-delay: 0.2s;">
+            <h3>Hazardous Gas Detection</h3>
+            <p>Utilizing high-precision sensors (MQ2, MQ135, CO) to monitor air quality in remote villages.</p>
+        </div>
+        <div class="card animate-in" style="animation-delay: 0.4s;">
+            <h3>Predictive Analysis</h3>
+            <p>Our BiLSTM neural networks analyze temporal patterns to predict gas concentrations before they reach
+                dangerous levels.</p>
+        </div>
+        <div class="card animate-in" style="animation-delay: 0.6s;">
+            <h3>Rural Safety</h3>
+            <p>Empowering rural communities with data-driven insights to mitigate health risks from hazardous gases.</p>
+        </div>
+    </div>
+</body>
+
+</html>

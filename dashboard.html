@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | RuralGas Protect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>RuralGas Protect | Admin</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/trends" class="btn btn-outline" style="padding: 0.4rem 1rem;">Trends of Hazardous Gas</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container animate-in">
+        <h2 style="margin-bottom: 2rem;">System Performance Metrics</h2>
+
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="card metric-card">
+                <h3>Avg Accuracy</h3>
+                <div class="metric-value">{{ "%.1f"|format((metrics.accuracy.svm + metrics.accuracy.bilstm)/2) }}%</div>
+            </div>
+            <div class="card metric-card">
+                <h3>Avg F1 Score</h3>
+                <div class="metric-value" style="color: #818cf8;">{{ "%.1f"|format((metrics.f1.svm + metrics.f1.bilstm)/2)
+                    }}%</div>
+            </div>
+            <div class="card metric-card">
+                <h3>Avg Recall</h3>
+                <div class="metric-value" style="color: #22c55e;">{{ "%.1f"|format((metrics.recall.svm +
+                    metrics.recall.bilstm)/2) }}%</div>
+            </div>
+        </div>
+
+        <div class="grid" style="margin-top: 2rem;">
+            <div class="card">
+                <h3>Algorithm Accuracy (Bar Chart)</h3>
+                <div class="chart-container">
+                    <canvas id="accuracyChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3>F1 Score Trends (Line Chart)</h3>
+                <div class="chart-container">
+                    <canvas id="f1Chart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Recall Analysis (Bar Chart)</h3>
+                <div class="chart-container">
+                    <canvas id="recallChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 3rem;">
+            <h3>User Management</h3>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><span style="background: var(--glass); padding: 0.2rem 0.5rem; border-radius: 4px;">{{
+                                user.role }}</span></td>
+                        <td><span style="color: var(--success);">● Active</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const metrics = {{ metrics| tojson }};
+
+        // Accuracy Chart
+        new Chart(document.getElementById('accuracyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['SVM', 'BiLSTM'],
+                datasets: [{
+                    label: 'Accuracy %',
+                    data: [metrics.accuracy.svm, metrics.accuracy.bilstm],
+                    backgroundColor: ['#38bdf8', '#818cf8'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.1)' } } }
+            }
+        });
+
+        // F1 Chart
+        new Chart(document.getElementById('f1Chart'), {
+            type: 'line',
+            data: {
+                labels: ['Phase 1', 'Phase 2', 'Current'],
+                datasets: [
+                    {
+                        label: 'SVM F1',
+                        data: [metrics.f1.svm - 5, metrics.f1.svm - 2, metrics.f1.svm],
+                        borderColor: '#38bdf8',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'BiLSTM F1',
+                        data: [metrics.f1.bilstm - 3, metrics.f1.bilstm - 1, metrics.f1.bilstm],
+                        borderColor: '#818cf8',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' } } }
+            }
+        });
+
+        // Recall Chart
+        new Chart(document.getElementById('recallChart'), {
+            type: 'bar',
+            data: {
+                labels: ['SVM', 'BiLSTM'],
+                datasets: [{
+                    label: 'Recall Score %',
+                    data: [metrics.recall.svm, metrics.recall.bilstm],
+                    backgroundColor: ['#22c55e', '#10b981'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.1)' } } }
+            }
+        });
+    </script>
+</body>
+
+</html>

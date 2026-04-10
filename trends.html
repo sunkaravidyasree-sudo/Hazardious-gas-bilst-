@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazardous Gas Trends | RuralGas Protect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>RuralGas Protect | Admin</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container animate-in">
+        <h2 style="margin-bottom: 2rem; text-align: center;">Hazardous Gas Concentration Trends</h2>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Historical Data (Last 10 Years)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">Average yearly concentration levels (ppm)</p>
+                <div class="chart-container">
+                    <canvas id="pastTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Future Predictions (Next 10 Years)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">Predicted concentration levels based on LSTM
+                    model</p>
+                <div class="chart-container">
+                    <canvas id="futureTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const trendData = {{ trend_data| tojson }};
+
+        // Past Trend Chart
+        new Chart(document.getElementById('pastTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: trendData.past_years,
+                datasets: [{
+                    label: 'Gas Level (ppm)',
+                    data: trendData.past_values,
+                    backgroundColor: 'rgba(56, 189, 248, 0.6)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 2,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: { ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // Future Trend Chart
+        new Chart(document.getElementById('futureTrendChart'), {
+            type: 'bar',
+            data: {
+                labels: trendData.future_years,
+                datasets: [{
+                    label: 'Predicted Gas Level (ppm)',
+                    data: trendData.future_values,
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: { ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

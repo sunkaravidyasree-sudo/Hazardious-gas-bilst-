@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result | RuralGas Protect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>RuralGas Protect</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/predict">Predict Again</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container animate-in">
+        <div class="card" style="max-width: 600px; margin: 4rem auto; text-align: center;">
+            <h2 style="margin-bottom: 2rem;">Analysis Complete</h2>
+
+            <div style="margin-bottom: 2rem;">
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 0.5rem;">Detected Air Status:</p>
+                <h1 style="font-size: 4rem; -webkit-text-fill-color: initial;"
+                    class="{% if result == 'Safe' %}result-safe{% elif result == 'Moderate' %}result-moderate{% else %}result-dangerous{% endif %}">
+                    {{ result }}
+                </h1>
+            </div>
+
+            <div class="card" style="background: rgba(255,255,255,0.02); border-color: var(--glass-border);">
+                {% if result == 'Safe' %}
+                <p>The air quality is within safe limits. No immediate action is required. Stay safe!</p>
+                {% elif result == 'Moderate' %}
+                <p>Warning: Elevated gas levels detected. Please ensure proper ventilation and check for possible leaks.
+                </p>
+                {% else %}
+                <p style="color: var(--danger); font-weight: bold;">DANGER: Hazardous gas levels detected! Evacuate the
+                    area immediately and contact emergency services.</p>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 3rem;">
+                <a href="/predict" class="btn btn-primary">New Prediction</a>
+                <a href="/" class="btn btn-outline" style="margin-left: 1rem;">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
